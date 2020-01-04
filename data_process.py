@@ -1,7 +1,6 @@
 import pandas as pd
 import pickle
 import numpy as np
-import tensorflow as tf
 
 def read_file(path):
     data=pd.read_excel(path,header=None)
@@ -70,6 +69,13 @@ def pad_sentence_ids(sentence_ids,max_seq_len):
             actual_length.append(length)
             pad_seq_ids.append(sentence_ids[:max_seq_len]+[0]*(max_seq_len-length))
     return pad_seq_ids,actual_length
+
+def tag_ids(labels,tag2id):
+    tag_list=[]
+    for tag in labels:
+        assert tag in tag2id
+        tag_list.append(tag2id[tag])
+    return tag_list
 
 
     
