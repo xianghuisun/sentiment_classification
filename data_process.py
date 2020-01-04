@@ -14,7 +14,7 @@ def read_file(path):
         labels.append(tag)
     return sentences,labels
 
-def get_parameter(sentences,labels,embedding_dim):
+def get_parameter(sentences,labels,embedding_dim,pa_path):
     tag_set=set()
     tag2id={}
     word2id={}
@@ -40,7 +40,7 @@ def get_parameter(sentences,labels,embedding_dim):
     print("length of word2id is ",len(word2id))
     embedding_matrix=np.random.uniform(-1.0,1.0,size=(len(word2id),embedding_dim))
     parameter_=(word2id,tag2id,embedding_matrix)
-    with open(r'C:\Users\Tony Sun\Desktop\sentiment_classfication\sentiment_classification\parameter.pkl','wb') as f:
+    with open(pa_path,'wb') as f:
         pickle.dump(parameter_,f) 
 
 def sentence_to_id(sentences,word2id):
@@ -64,18 +64,21 @@ def pad_sentence_ids(sentence_ids,max_seq_len):
         length=len(each_seq)
         if length>=max_seq_len:
             actual_length.append(max_seq_len)
-            pad_seq_ids.append(sentence_ids[:max_seq_len])
+            pad_seq_ids.append(each_seq[:max_seq_len])
         else:
             actual_length.append(length)
-            pad_seq_ids.append(sentence_ids[:max_seq_len]+[0]*(max_seq_len-length))
+            pad_seq_ids.append(each_seq[:max_seq_len]+[0]*(max_seq_len-length))
+    assert np.array(pad_seq_ids).shape==(len(sentence_ids),max_seq_len)
     return pad_seq_ids,actual_length
 
 def tag_ids(labels,tag2id):
-    tag_list=[]
-    for tag in labels:
-        assert tag in tag2id
-        tag_list.append(tag2id[tag])
-    return tag_list
+    train_label=np.zeros(shape=(len(labels),len(tag2id)))
+    for i in range(len(labels)):
+        currect_tag=labels[i]
+        assert currect_tag in tag2id
+        tag_id=tag2id[currect_tag]
+        train_label[i][tag_id]=1
+    return train_label
 
 
     
