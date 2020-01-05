@@ -12,7 +12,7 @@ def read_file(path):
             seq=str(seq)
         sentences.append(seq)
         labels.append(tag)
-    return sentences,labels
+    return sentences[:-500],labels[:-500]
 
 def get_parameter(sentences,labels,embedding_dim,pa_path):
     tag_set=set()
