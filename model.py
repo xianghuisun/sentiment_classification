@@ -26,8 +26,9 @@ class Config:
         self.embedding_dim=100
         self.max_seq_len=70
         #self.model_save_path='/home/sun_xh/sentiment_analysis/log/model.ckpt'
-        self.model_save_path='/home/xhsun/Documents/assignment/log/model.ckpt'
-     
+        #self.model_save_path='/home/xhsun/Documents/assignment/log/model.ckpt'
+        self.model_save_path=r'C:\Users\Tony Sun\Desktop\sentiment_classfication\log\model.ckpt'
+        
 class S_A_model:
     def __init__(self,tag2id,config,embedding_matrix,batch_size):
         self.num_tags=len(tag2id)
@@ -149,7 +150,7 @@ def train_model(train_file_path,parameter_path):
     model.train(train_seq=pad_seq_ids,train_label=train_label)#训练
 
 def test_model(test_file_path,parameter_path):
-    sentences,labels=read_file(test_file_path)#将excel中test.xlsx的句子提取出来，得到测试集
+    sentences=read_file(test_file_path,train_test="test")#将excel中test.xlsx的句子提取出来，得到测试集
     with open(parameter_path,'rb') as f:
         word2id,tag2id,embedding_matrix=pickle.load(f)   #加载模型要用到的参数
     sentence_ids=sentence_to_id(sentences,word2id)#将每一个句子中的每一个单词转成相应的在word2id中的索引
@@ -158,18 +159,23 @@ def test_model(test_file_path,parameter_path):
     model=S_A_model(tag2id,config,embedding_matrix,batch_size=10)#模型的初始化
     model.build_graph()
     result=model.test(test_seq=pad_seq_ids)
-    with open('/home/xhsun/Documents/assignment/sentiment_classification/result_.pkl','wb') as f:
-        pickle.dump(result,f)
-    
+    #with open('/home/xhsun/Documents/assignment/sentiment_classification/result_.pkl','wb') as f:
+    #    pickle.dump(result,f)
+    with open(r'C:\Users\Tony Sun\Desktop\sentiment_classfication\sentiment_classification\result.txt','w',encoding='utf-8') as f:
+        for tag in result:
+            f.write(tag)
+            f.write("\n")
             
 if __name__ == "__main__":
-    file_path='/home/xhsun/Documents/assignment/sentiment_classification/train.xlsx'
-    test_path='/home/xhsun/Documents/assignment/sentiment_classification/test.xlsx'
-    parameter_path='/home/xhsun/Documents/assignment/parameter.pkl'
+    #file_path='/home/xhsun/Documents/assignment/sentiment_classification/train.xlsx'
+    #test_path='/home/xhsun/Documents/assignment/sentiment_classification/test.xlsx'
+    #parameter_path='/home/xhsun/Documents/assignment/parameter.pkl'
     #parameter_path='/home/sun_xh/sentiment_analysis/parameter.pkl'
-    
-    train_model(train_file_path=file_path,parameter_path=parameter_path)
-    test_accuracy(file_path=file_path,parameter_path=parameter_path)
+    file_path=r'C:\Users\Tony Sun\Desktop\sentiment_classfication\sentiment_classification\train.xlsx'
+    test_path=r'C:\Users\Tony Sun\Desktop\sentiment_classfication\sentiment_classification\test.xlsx'
+    parameter_path=r'C:\Users\Tony Sun\Desktop\sentiment_classfication\parameter.pkl'
+    #train_model(train_file_path=file_path,parameter_path=parameter_path)
+    #test_accuracy(file_path=file_path,parameter_path=parameter_path)
     
     test_model(test_file_path=test_path,parameter_path=parameter_path)
         
