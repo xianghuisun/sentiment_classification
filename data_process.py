@@ -2,17 +2,27 @@ import pandas as pd
 import pickle
 import numpy as np
 
-def read_file(path):
+def read_file(path,train_test="train"):
     data=pd.read_excel(path,header=None)
     sentences,labels=[],[]
-    for seq,tag in zip(data[0].values,data[1].values):
-        try:
-            assert type(seq)==str
-        except:
-            seq=str(seq)
-        sentences.append(seq)
-        labels.append(tag)
-    return sentences[:-500],labels[:-500]
+    if train_test=="train":
+        for seq,tag in zip(data[0].values,data[1].values):
+            try:
+                assert type(seq)==str
+            except:
+                seq=str(seq)
+            sentences.append(seq)
+            labels.append(tag)
+        return sentences,labels
+    else:
+        for seq in data[0].values:
+            try:
+                assert type(seq)==str
+            except:
+                print(seq)
+                seq=str(seq)
+            sentences.append(seq)
+        return sentences
 
 def get_parameter(sentences,labels,embedding_dim,pa_path):
     tag_set=set()
@@ -59,17 +69,14 @@ def sentence_to_id(sentences,word2id):
 
 def pad_sentence_ids(sentence_ids,max_seq_len):
     pad_seq_ids=[]
-    actual_length=[]
     for each_seq in sentence_ids:
         length=len(each_seq)
         if length>=max_seq_len:
-            actual_length.append(max_seq_len)
             pad_seq_ids.append(each_seq[:max_seq_len])
         else:
-            actual_length.append(length)
             pad_seq_ids.append(each_seq[:max_seq_len]+[0]*(max_seq_len-length))
     assert np.array(pad_seq_ids).shape==(len(sentence_ids),max_seq_len)
-    return pad_seq_ids,actual_length
+    return pad_seq_ids
 
 def tag_ids(labels,tag2id):
     train_label=np.zeros(shape=(len(labels),len(tag2id)))
