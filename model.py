@@ -149,7 +149,7 @@ def train_model(train_file_path,parameter_path):
     model.train(train_seq=pad_seq_ids,train_label=train_label)#训练
 
 def test_model(test_file_path,parameter_path):
-    sentences,labels=read_file(test_file_path)#将excel中test.xlsx的句子提取出来，得到测试集
+    sentences=read_file(test_file_path,train_test="test")#将excel中test.xlsx的句子提取出来，得到测试集
     with open(parameter_path,'rb') as f:
         word2id,tag2id,embedding_matrix=pickle.load(f)   #加载模型要用到的参数
     sentence_ids=sentence_to_id(sentences,word2id)#将每一个句子中的每一个单词转成相应的在word2id中的索引
@@ -168,8 +168,8 @@ if __name__ == "__main__":
     parameter_path='/home/xhsun/Documents/assignment/parameter.pkl'
     #parameter_path='/home/sun_xh/sentiment_analysis/parameter.pkl'
     
-    train_model(train_file_path=file_path,parameter_path=parameter_path)
-    test_accuracy(file_path=file_path,parameter_path=parameter_path)
+    #train_model(train_file_path=file_path,parameter_path=parameter_path)
+    #test_accuracy(file_path=file_path,parameter_path=parameter_path)
     
     test_model(test_file_path=test_path,parameter_path=parameter_path)
         
